@@ -1,52 +1,47 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webhook Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Test</title>
 </head>
 <body>
 
-<label for="webhookUrl">Webhook URL:</label>
-<input type="text" id="webhookUrl" placeholder="Enter Webhook URL">
+    <label for="dataInput">Data:</label>
+    <input type="text" id="dataInput" placeholder="Enter data">
 
-<button onclick="sendWebhookRequest()">Send Webhook Request</button>
+    <br>
 
-<script>
-  function sendWebhookRequest() {
-    // Get the webhook URL from the textbox
-    const webhookUrl = document.getElementById('webhookUrl').value;
+    <label for="webhookInput">Webhook URL:</label>
+    <input type="text" id="webhookInput" placeholder="Enter webhook URL">
 
-    // Ensure a URL is provided
-    if (!webhookUrl) {
-      alert('Please enter a valid Webhook URL');
-      return;
-    }
+    <br>
 
-    // Data to send in the POST request
-    const postData = {
-      message: 'Hello, webhook!',
-      timestamp: new Date().toISOString()
-    };
+    <button onclick="sendData()">Send Data</button>
 
-    // Make an HTTP POST request using the Fetch API
-    fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(postData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Webhook response:', data);
-      // You can handle the response data here
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
-</script>
+    <script>
+        function sendData() {
+            // Get data and webhook URL from input fields
+            var data = document.getElementById("dataInput").value;
+            var webhookURL = document.getElementById("webhookInput").value;
+
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+
+            // Configure it to send a POST request
+            xhr.open("POST", webhookURL, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            // Send the data as JSON
+            xhr.send(JSON.stringify({ data: data }));
+
+            // You can handle the response if needed
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log("Webhook request successful!");
+                }
+            };
+        }
+    </script>
 
 </body>
 </html>
