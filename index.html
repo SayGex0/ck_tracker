@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhook Test</title>
+</head>
+<body>
+
+<label for="webhookUrl">Webhook URL:</label>
+<input type="text" id="webhookUrl" placeholder="Enter Webhook URL">
+
+<button onclick="sendWebhookRequest()">Send Webhook Request</button>
+
+<script>
+  function sendWebhookRequest() {
+    // Get the webhook URL from the textbox
+    const webhookUrl = document.getElementById('webhookUrl').value;
+
+    // Ensure a URL is provided
+    if (!webhookUrl) {
+      alert('Please enter a valid Webhook URL');
+      return;
+    }
+
+    // Data to send in the POST request
+    const postData = {
+      message: 'Hello, webhook!',
+      timestamp: new Date().toISOString()
+    };
+
+    // Make an HTTP POST request using the Fetch API
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Webhook response:', data);
+      // You can handle the response data here
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+</script>
+
+</body>
+</html>
