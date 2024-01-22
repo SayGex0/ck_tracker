@@ -1,47 +1,77 @@
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webhook Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhook Tester</title>
 </head>
 <body>
 
-    <label for="dataInput">Data:</label>
-    <input type="text" id="dataInput" placeholder="Enter data">
+  <h2>Webhook Tester</h2>
 
+  <form id="webhookForm">
+    <label for="method">HTTP Method:</label>
+    <select id="method" name="method">
+      <option value="GET">GET</option>
+      <option value="POST">POST</option>
+      <option value="PUT">PUT</option>
+      <option value="DELETE">DELETE</option>
+      <!-- Add more methods as needed -->
+    </select>
     <br>
 
-    <label for="webhookInput">Webhook URL:</label>
-    <input type="text" id="webhookInput" placeholder="Enter webhook URL">
-
+    <label for="contentType">Content Type:</label>
+    <input type="text" id="contentType" name="contentType" placeholder="application/json">
     <br>
 
-    <button onclick="sendData()">Send Data</button>
+    <label for="data">Data:</label>
+    <input type="text" id="data" name="data" placeholder="Enter data...">
+    <br>
 
-    <script>
-        function sendData() {
-            // Get data and webhook URL from input fields
-            var data = document.getElementById("dataInput").value;
-            var webhookURL = document.getElementById("webhookInput").value;
+    <label for="webhookUrl">Webhook URL:</label>
+    <input type="text" id="webhookUrl" name="webhookUrl" placeholder="Enter webhook URL...">
+    <br>
 
-            // Create a new XMLHttpRequest object
-            var xhr = new XMLHttpRequest();
+    <button type="button" onclick="sendWebhook()">Send Webhook</button>
+  </form>
 
-            // Configure it to send a POST request
-            xhr.open("POST", webhookURL, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
+  <div>
+    <h3>Console Log:</h3>
+    <textarea id="consoleLog" rows="5" cols="40" readonly></textarea>
+  </div>
 
-            // Send the data as JSON
-            xhr.send(JSON.stringify({ data: data }));
+  <script>
+    function sendWebhook() {
+      const method = document.getElementById('method').value;
+      const contentType = document.getElementById('contentType').value;
+      const data = document.getElementById('data').value;
+      const webhookUrl = document.getElementById('webhookUrl').value;
 
-            // You can handle the response if needed
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log("Webhook request successful!");
-                }
-            };
-        }
-    </script>
+      // Example using Fetch API
+      fetch(webhookUrl, {
+        method: method,
+        headers: {
+          'Content-Type': contentType
+        },
+        body: data
+      })
+      .then(response => response.json())  // Adjust as needed based on expected response format
+      .then(responseData => {
+        console.log('Webhook response:', responseData);
+        logToConsole('Webhook response: ' + JSON.stringify(responseData));
+        // Handle response as needed
+      })
+      .catch(error => {
+        console.error('Error sending webhook:', error);
+        logToConsole('Error sending webhook: ' + error.message);
+      });
+    }
+
+    function logToConsole(message) {
+      const consoleLog = document.getElementById('consoleLog');
+      consoleLog.value += message + '\n';
+    }
+  </script>
 
 </body>
 </html>
