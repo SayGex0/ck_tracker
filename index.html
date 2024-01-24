@@ -3,37 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Display from Link</title>
+    <title>Text Display with Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .textbox {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            height: 200px;
+            overflow: auto;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Text Display from Link</h1>
-
-<label for="linkInput">Enter Text Link:</label>
-<input type="text" id="linkInput" placeholder="Enter text link">
-
-<button onclick="displayText()">Display Text</button>
-
-<div id="displayBox" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
+<div class="textbox" id="displayText"></div>
 
 <script>
-    function displayText() {
-        // Get the link input value
-        var linkInput = document.getElementById("linkInput").value;
+    const proxyUrl = 'proxy.php?url=';
+    const textLink = proxyUrl + encodeURIComponent('https://pastebin.com/raw/pkcn8UFr');
 
-        // Fetch content from the link
-        fetch(linkInput)
-            .then(response => response.text())
-            .then(data => {
-                // Display the content in the display box
-                document.getElementById("displayBox").innerHTML = data;
-            })
-            .catch(error => {
-                console.error('Error fetching content:', error);
-                // Display an error message in the display box
-                document.getElementById("displayBox").innerHTML = 'Error fetching content. Please check the link.';
-            });
-    }
+    // Fetch the text from the link via proxy
+    fetch(textLink)
+        .then(response => response.text())
+        .then(text => {
+            // Display the text in the textbox
+            document.getElementById('displayText').innerText = text;
+        })
+        .catch(error => console.error('Error fetching text:', error));
 </script>
 
 </body>
