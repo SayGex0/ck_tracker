@@ -18,12 +18,16 @@
             flex-wrap: wrap;
         }
 
+        #left-box, #right-box, #bottom-box {
+            border: 1px solid #000; /* Add outline */
+            box-sizing: border-box;
+        }
+
         #left-box, #right-box {
             -ms-flex: 1;
             flex: 1;
             min-height: 200px;
             padding: 20px;
-            box-sizing: border-box;
         }
 
         #bottom-box {
@@ -31,7 +35,6 @@
             flex-basis: 100%;
             min-height: 100px;
             padding: 20px;
-            box-sizing: border-box;
             background-color: #d0d0d0;
         }
     </style>
@@ -53,32 +56,27 @@
 
     <div id="bottom-box">
         <!-- Content for bottom box goes here -->
-        <h2>Logs:</h2>
+        <h2>Bottom Box</h2>
         <div id="logs-box"></div>
     </div>
 </div>
 
 <script>
-    // JavaScript code to add text based on search parameters
-    var searchParams = new URLSearchParams(window.location.search);
-    var logsText = searchParams.get("logs");
-
-    if (logsText) {
-        try {
-            var logsObject = JSON.parse(logsText);
+    // JavaScript code to load JSON from file
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
             var logsBox = document.getElementById("logs-box");
 
-            if (Array.isArray(logsObject.logs)) {
-                logsObject.logs.forEach(function(item) {
+            if (Array.isArray(data.logs)) {
+                data.logs.forEach(function(item) {
                     logsBox.innerHTML += "<p>" + item + "</p>";
                 });
             } else {
                 console.error("Logs property is not an array.");
             }
-        } catch (error) {
-            console.error("Error parsing JSON:", error);
-        }
-    }
+        })
+        .catch(error => console.error("Error loading JSON:", error));
 </script>
 
 </body>
