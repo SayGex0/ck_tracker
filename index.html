@@ -3,38 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Display with Proxy</title>
+    <title>Page Layout</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            margin: 20px;
         }
 
-        .textbox {
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 300px;
-            height: 200px;
-            overflow: auto;
+        #container {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
+
+        #left-box, #right-box {
+            -ms-flex: 1;
+            flex: 1;
+            min-height: 200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #bottom-box {
+            -ms-flex-basis: 100%;
+            flex-basis: 100%;
+            min-height: 100px;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #d0d0d0;
         }
     </style>
 </head>
 <body>
 
-<div class="textbox" id="displayText"></div>
+<div id="container">
+    <div id="left-box">
+        <!-- Content for left box goes here -->
+        <h2>Left Box</h2>
+        <p>This is the left area.</p>
+    </div>
+
+    <div id="right-box">
+        <!-- Content for right box goes here -->
+        <h2>Right Box</h2>
+        <p>This is the right area.</p>
+    </div>
+
+    <div id="bottom-box">
+        <!-- Content for bottom box goes here -->
+        <h2>Logs:</h2>
+        <div id="logs-box"></div>
+    </div>
+</div>
 
 <script>
-    const proxyUrl = 'proxy.php?url=';
-    const textLink = proxyUrl + encodeURIComponent('https://pastebin.com/raw/pkcn8UFr');
+    // JavaScript code to add text based on search parameters
+    var searchParams = new URLSearchParams(window.location.search);
+    var logsText = searchParams.get("logs");
 
-    // Fetch the text from the link via proxy
-    fetch(textLink)
-        .then(response => response.text())
-        .then(text => {
-            // Display the text in the textbox
-            document.getElementById('displayText').innerText = text;
-        })
-        .catch(error => console.error('Error fetching text:', error));
+    if (logsText) {
+        try {
+            var logsObject = JSON.parse(logsText);
+            var logsBox = document.getElementById("logs-box");
+
+            if (Array.isArray(logsObject.logs)) {
+                logsObject.logs.forEach(function(item) {
+                    logsBox.innerHTML += "<p>" + item + "</p>";
+                });
+            } else {
+                console.error("Logs property is not an array.");
+            }
+        } catch (error) {
+            console.error("Error parsing JSON:", error);
+        }
+    }
 </script>
 
 </body>
